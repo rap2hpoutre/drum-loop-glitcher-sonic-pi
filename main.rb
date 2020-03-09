@@ -1,26 +1,29 @@
 # frozen_string_literal: true
 
 glitches_smooth = [
-  method(:glitch_none), 
-  method(:glitch_binary_drill),   
-  method(:glitch_reorder),
-  method(:glitch_reverse_last),
-  method(:glitch_chop1),
-  method(:glitch_cut),
+  :glitch_none,
+  :glitch_binary_drill,
+  :glitch_reorder,
+  :glitch_reverse_last,
+  :glitch_chop1,
+  :glitch_cut
 ]
 glitches_hard = [
-  method(:glitch_binary_drill),
-  method(:glitch_ternary_drill),
-  method(:glitch_unordered_binary_drill),
-  method(:glitch_unordered_super_slice_drill),
-  method(:glitch_super_slice_drill),
-  method(:glitch_half_unordered_super_slice_drill),
-  method(:glitch_super_slice_drill_last),
-  method(:glitch_something),
-  method(:glitch_two_bug_end),
-  method(:glitch_aphex),
-  method(:glitch_broken_start),
-  method(:glitch_cut_then_break)
+  :glitch_binary_drill,
+  :glitch_ternary_drill,
+  :glitch_unordered_binary_drill,
+  :glitch_unordered_super_slice_drill,
+  :glitch_super_slice_drill,
+  :glitch_half_unordered_super_slice_drill,
+  :glitch_super_slice_drill_last,
+  :glitch_something,
+  :glitch_two_bug_end,
+  :glitch_aphex,
+  :glitch_broken_start,
+  :glitch_cut_then_break,
+  :glitch_end_something,
+  :glitch_fx_end,
+  :glitch_xit
 ]
 glitches_all = glitches_smooth + glitches_hard
 
@@ -36,10 +39,12 @@ loops.each do |item|
     indices = (0..(item[:bars_count] - 1)).to_a.ring
     ((0..3).to_a * 2).each do |index|
       ctx = { beats_per_bar: 4, bars_count: item[:bars_count], current_bar: indices[index], smp: current_data }
-      glitch_none ctx if index == 0
-      glitches_all.choose.call(ctx) if index == 1
-      glitches_smooth.choose.call(ctx) if index == 2
-      glitches_all.choose.call(ctx) if index == 3
+
+      current = :glitch_none if index == 0
+      current = glitches_all.choose if index > 0
+      # current = glitches_smooth.choose if index == 2
+      puts current, index, indices[index], ctx
+      method(current).call(ctx)
     end
   end
 end

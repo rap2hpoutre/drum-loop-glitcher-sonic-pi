@@ -16,7 +16,7 @@ define :four_beats do |ctx, start = 0| slice(ctx, start, start + 4) end
 define :half_beat do |ctx, start = 0| slice(ctx, start, start + 0.5) end
 define :three_quarter_beat do |ctx, start = 0| slice(ctx, start, start + 0.75) end
 define :one_beat_random do |ctx| one_beat(ctx, rrand_i(0, 3)) end
-define :half_beat_random do |ctx| one_beat(ctx, (0..3.5).step(0.5).to_a.choose) end
+define :half_beat_random do |ctx| half_beat(ctx, (0..3.5).step(0.5).to_a.choose) end
 define :duration do |s| (s[:finish] - s[:start]).to_f end
 
 define :normal do |s|
@@ -24,14 +24,15 @@ define :normal do |s|
   sleep duration(s)
 end
 
-define :reverse do |slice|
-  normal({ start: slice[:finish], finish: slice[:start], smp: slice[:smp] })
+define :reverse do |s|
+  sample s[:smp], start: s[:finish], finish: s[:start]
+  sleep duration(s)
 end
 
-define :drill do |slice, quantity|
+define :drill do |s, quantity|
   quantity.times do |_index|
-    sample slice[:smp], start: slice[:start], finish: slice[:start] + duration(slice) / quantity
-    sleep duration(slice) / quantity
+    sample s[:smp], start: s[:start], finish: s[:start] + duration(s) / quantity.to_f
+    sleep duration(s) / quantity.to_f
   end
 end
 
@@ -63,8 +64,26 @@ define :mute_quarter do |slice|
   sleep duration(slice)
 end
 
+define :crushed do |slice|
+  with_fx :bitcrusher do normal slice end
+end
+
+define :nnbpf do |slice|
+  with_fx :nbpf, amp: 0.5, centre: 100 do normal slice end
+end
+
+define :xit do |slice|
+  with_fx :ixi_techno, phase: 1, phase_offset: 0.5 do normal slice end
+end
+
+define :ring_modulator do |slice|
+  with_fx :ring_mod, freq: 30, freq_slide: duration(slice) do |_r|
+    normal slice
+  end
+end
+
 define :something do |slice|
-  case dice(8)
+  case dice(9)
   when 1 then reverse slice
   when 2 then drill slice, [1, 2, 3, 4, 6, 8, 16, 24, 32].choose
   when 3 then drill slice, [1, 2, 4].choose
@@ -72,6 +91,7 @@ define :something do |slice|
   when 5 then mute_quarter slice
   when 6 then slow slice
   when 7 then fast slice
+  when 8 then crushed slice
   else normal slice
   end
 end

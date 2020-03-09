@@ -6,19 +6,17 @@ ternary_binary_chunks = [1, 2, 2, 3, 3, 4, 4, 6, 6, 8, 16, 24, 32]
 define :glitch_none do |ctx| normal four_beats(ctx) end
 define :glitch_reorder do |ctx| 4.times { normal one_beat_random(ctx) } end
 
-define :glitch_binary_drill do |ctx| 4.times { |index| drill(one_beat(ctx, index), binary_chunks.choose) } end
+define :glitch_binary_drill do |ctx|
+  4.times { |index| drill(one_beat(ctx, index), binary_chunks.choose) }
+end
 define :glitch_ternary_drill do |ctx| 4.times { |index| drill(one_beat(ctx, index), ternary_binary_chunks.choose) } end
 define :glitch_unordered_binary_drill do |ctx| 4.times { drill(one_beat_random(ctx), binary_chunks.choose) } end
 define :glitch_unordered_super_slice_drill do |ctx| 8.times { drill(half_beat_random(ctx), ternary_binary_chunks.choose) } end
-define :glitch_super_slice_drill do |ctx| 8.times { |index| drill(half_beat(ctx, index), ternary_binary_chunks.choose) } end
+define :glitch_super_slice_drill do |ctx| 8.times { |index| drill(half_beat(ctx, index / 2.0), ternary_binary_chunks.choose) } end
 
 define :glitch_half_unordered_super_slice_drill do |ctx|
   8.times do |index|
-    if one_in(2)
-      drill(one_beat(ctx, index), binary_chunks.choose)
-    else
-      drill(half_beat_random(ctx), binary_chunks.choose)
-    end
+    drill(one_in(2) ? half_beat(ctx, index / 2.0) : half_beat_random(ctx), binary_chunks.choose)
   end
 end
 
@@ -64,11 +62,40 @@ define :glitch_chop1 do |ctx|
 end
 
 define :glitch_cut do |ctx|
-  8.times { |index| mute_half half_beat(ctx, index) }
+  8.times { |index| mute_half half_beat(ctx, index / 2.0) }
 end
 
 define :glitch_cut_then_break do |ctx|
-  6.times { |index| mute_half half_beat(ctx, index) }
+  6.times { |index| mute_half half_beat(ctx, index / 2.0) }
   slow half_beat_random(ctx)
   drill half_beat_random(ctx), 16
+end
+
+define :glitch_fx_end do |ctx|
+  mute_quarter one_beat(ctx, 0)
+  normal three_quarter_beat(ctx, 1)
+  normal three_quarter_beat(ctx, 1)
+  normal half_beat(ctx, 1)
+  nnbpf one_beat(ctx, 3)
+end
+
+define :glitch_xit do |ctx|
+  normal two_beats(ctx)
+  xit two_beats(ctx, 2)
+end
+
+define :glitch_end_something do |ctx|
+  normal two_beats(ctx)
+  crushed half_beat(ctx, 0)
+  nnbpf half_beat(ctx, 0)
+  xit half_beat(ctx, 0)
+  ring_modulator half_beat(ctx, 0)
+end
+
+define :scratch do |ctx|
+  normal half_beat(ctx)
+  reverse half_beat(ctx)
+  normal half_beat(ctx)
+  reverse half_beat(ctx)
+  normal two_beats(ctx)
 end
