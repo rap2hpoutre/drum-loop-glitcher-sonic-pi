@@ -64,14 +64,14 @@ define :mute_quarter do |slice|
 end
 
 define :something do |slice|
-  case dice(4)
+  case dice(8)
   when 1 then reverse slice
-  when 2 then drill slice, ternary_binary_chunks.choose
-  when 2 then drill slice, ternary_binary_chunks.choose
-  when 3 then mute_half slice
-  when 2 then mute_quarter slice
-  when 3 then slow slice
-  when 2 then fast slice
-  else slow slice
+  when 2 then drill slice, [1, 2, 3, 4, 6, 8, 16, 24, 32].choose
+  when 3 then drill slice, [1, 2, 4].choose
+  when 4 then mute_half slice
+  when 5 then mute_quarter slice
+  when 6 then slow slice
+  when 7 then fast slice
+  else normal slice
   end
 end

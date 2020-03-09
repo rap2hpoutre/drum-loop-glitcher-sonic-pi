@@ -32,11 +32,11 @@ define :glitch_reverse_last do |ctx|
   reverse one_beat(ctx, 3)
 end
 
-define :glitch_something do
+define :glitch_something do |ctx|
   4.times { |index| something one_beat(ctx, index) }
 end
 
-define :glitch_two_bug_end do
+define :glitch_two_bug_end do |ctx|
   slow one_beat(ctx, 0)
   normal two_beats(ctx, 1)
   something half_beat_random(ctx)
