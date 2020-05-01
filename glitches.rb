@@ -86,16 +86,16 @@ end
 
 define :glitch_end_something do |ctx|
   normal two_beats(ctx)
-  crushed half_beat(ctx, 0)
-  nnbpf half_beat(ctx, 0)
-  xit half_beat(ctx, 0)
-  ring_modulator half_beat(ctx, 0)
+  crushed one_beat(ctx, 2)
+  nnbpf one_beat(ctx, 3)
 end
 
 define :scratch do |ctx|
   normal half_beat(ctx)
   reverse half_beat(ctx)
-  normal half_beat(ctx)
-  reverse half_beat(ctx)
-  normal two_beats(ctx)
+  normal half_beat(ctx, 1)
+  reverse half_beat(ctx, 1)
+  normal one_beat(ctx, 2)
+  xit half_beat(ctx, 3)
+  slow half_beat(ctx, 3.5)
 end

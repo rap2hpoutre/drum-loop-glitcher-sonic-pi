@@ -6,7 +6,8 @@ glitches_smooth = [
   :glitch_reorder,
   :glitch_reverse_last,
   :glitch_chop1,
-  :glitch_cut
+  :glitch_cut,
+  :glitch_xit,
 ]
 glitches_hard = [
   :glitch_binary_drill,
@@ -23,16 +24,16 @@ glitches_hard = [
   :glitch_cut_then_break,
   :glitch_end_something,
   :glitch_fx_end,
-  :glitch_xit
+  :scratch
 ]
 glitches_all = glitches_smooth + glitches_hard
 
 loops = [
-  { bars_count: 1, data: [:loop_amen] },
+  { bars_count: 1, data: [:loop_amen, :loop_electric, :loop_mehackit2] },
   { bars_count: 2, data: [:loop_compus] },
-  { bars_count: 4, data: [:loop_amen_full] }
+  { bars_count: 4, data: [:loop_garzul, :loop_garzul, :loop_safari, :loop_mika, :loop_amen_full ] }
 ]
-
+use_random_seed 99
 loops.each do |item|
   item[:data].each do |current_data|
     use_sample_bpm current_data
@@ -41,8 +42,8 @@ loops.each do |item|
       ctx = { beats_per_bar: 4, bars_count: item[:bars_count], current_bar: indices[index], smp: current_data }
 
       current = :glitch_none if index == 0
-      current = glitches_all.choose if index > 0
-      # current = glitches_smooth.choose if index == 2
+      current = glitches_all.choose if index == 1 || index == 3
+      current = glitches_smooth.choose if index == 2
       puts current, index, indices[index], ctx
       method(current).call(ctx)
     end
